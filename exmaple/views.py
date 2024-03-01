@@ -2,6 +2,7 @@
 # from django.views.decorators.csrf import csrf_exempt
 # from rest_framework.parsers import JSONParser
 from django.http import Http404
+from django.contrib.auth.models import User
 
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -10,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import Snippet
-from .serializers import SnippetSerializer
+from .serializers import SnippetSerializer, UserSerialiser
 
 
 """****************** 1. Méthode Classique ********************"""
@@ -197,4 +198,12 @@ class SnippetList(generics.ListCreateAPIView):
 
 class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Snippet.objects.all()
-    serializer_class = SnippetSerializer
+    serializer_class = SnippetSerializer 
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerialiser
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerialiser
