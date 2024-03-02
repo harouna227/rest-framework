@@ -35,10 +35,12 @@ from .models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 
 # Raccourci avec ModelSerializer qui implemente déjà les méthodes create et update
 class SnippetSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Snippet
-        fields = ['id', 'title', 'code', 'linenos', 'language', 'style']
+        fields = ['id', 'title', 'code', 'linenos', 'language', 'style', 'owner']
+
 
 class UserSerialiser(serializers.ModelSerializer):
     """
