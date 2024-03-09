@@ -34,22 +34,24 @@ from .models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
 # Raccourci avec ModelSerializer qui implemente déjà les méthodes create et update
-class SnippetSerializer(serializers.ModelSerializer):
+class SnippetSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    highlight = serializers.HyperlinkedIdentityField(view_name='snippet-highlight', format='html')
 
     class Meta:
         model = Snippet
-        fields = ['id', 'title', 'code', 'linenos', 'language', 'style', 'owner']
+        fields = ['url', 'id', 'highlight', 'owner',
+                  'title', 'code', 'linenos', 'language', 'style']
 
 
-class UserSerialiser(serializers.ModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
     """
     - Points de terminaison pour nos modèles user
     - Ajout de répresentant de ces users à notre API
     """
-    snippets = serializers.PrimaryKeyRelatedField(many=True,
-                                        queryset=Snippet.objects.all())
+    snippets = serializers.HyperlinkedRelatedField(many=True, 
+                                                   view_name='snippet-detail', read_only=True)
     
     class Meta:
         model = User
-        fields = ['id', 'username', 'snippets']
+        fields = ['url', 'id', 'username', 'snippets']
